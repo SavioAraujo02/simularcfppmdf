@@ -1,6 +1,4 @@
-print("Início do script app.py")
-from flask import Flask, request, jsonify, send_file, render_template
-print("Importações do Flask concluídas")
+import json
 import pandas as pd
 import os
 from datetime import datetime
@@ -11,15 +9,14 @@ from reportlab.lib.units import cm, mm
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-print("Outras importações concluídas")
+from flask import Flask, render_template, request, jsonify, send_file
 
-app = Flask(__name__, static_url_path='', static_folder='.')
-print("Objeto Flask inicializado")
+app = Flask(__name__)
 
 class SistemaConvocacao:
-    def __init__(self, caminho_arquivo):
-        """Inicializa o sistema de convocação com o arquivo Excel de candidatos."""
-        self.caminho_arquivo = caminho_arquivo
+    def __init__(self, caminho_arquivo_json):
+        """Inicializa o sistema de convocação com o arquivo JSON de candidatos."""
+        self.caminho_arquivo_json = caminho_arquivo_json
         self.df = None
         self.convocados_final = None
         self.data_geracao = datetime.now().strftime("%d/%m/%Y às %H:%M:%S")
@@ -31,30 +28,39 @@ class SistemaConvocacao:
             print("Aviso: Fonte Arial não encontrada. Usando Helvetica como alternativa.")
 
     def carregar_dados(self):
-        """Carrega e prepara os dados do arquivo Excel, removendo convocados"""
+        """Carrega e prepara os dados do arquivo JSON, removendo convocados"""
         try:
-            self.df = pd.read_csv(self.caminho_arquivo, decimal=',')
+            with open(self.caminho_arquivo_json, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            self.df = pd.DataFrame(data)
 
             # Limpeza e preparação dos dados
             self.df.columns = self.df.columns.str.strip()
-            
+
             # Converter a coluna de inscrição para string para garantir compatibilidade
             self.df["INSCRIÇÃO"] = self.df["INSCRIÇÃO"].astype(str).str.strip()
 
             # Remover candidatos já convocados
             self.df = self.df[self.df["SITUAÇÃO"] != "CONVOCADO"].copy()
             self.df.reset_index(drop=True, inplace=True) # Resetar o índice após a filtragem
-            
-            print(f"Dados carregados com sucesso. Total de {len(self.df)} candidatos.")
-            print(f"Primeiras 5 inscrições no dataframe: {self.df['INSCRIÇÃO'].head(5).tolist()}")
-            print(f"Últimas 5 inscrições no dataframe: {self.df['INSCRIÇÃO'].tail(5).tolist()}")
+
+            # Converter colunas numéricas (onde a conversão para float é possível)
+            numeric_cols = ['CLAS. AMPLA', 'CLAS. COTAS', 'LP', 'LI', 'RLM', 'AT', 'LEG. PMDF', 'CONH. BÁS.', 'CONH. ESP.', 'TOTAL OBJETIVA', 'REDAÇÃO', 'NOTA TOTAL']
+            for col in numeric_cols:
+                if col in self.df.columns:
+                    # Tentar converter para float, substituindo vírgula por ponto
+                    self.df[col] = pd.to_numeric(self.df[col].str.replace(',', '.'), errors='coerce')
 
             # Cria coluna para identificar cotistas
             self.df["cotista"] = self.df["CLAS. COTAS"].notna()
 
+            print(f"Dados carregados com sucesso do JSON. Total de {len(self.df)} candidatos.")
+            print(f"Primeiras 5 inscrições no dataframe: {self.df['INSCRIÇÃO'].head(5).tolist()}")
+            print(f"Últimas 5 inscrições no dataframe: {self.df['INSCRIÇÃO'].tail(5).tolist()}")
+
             return True
         except Exception as e:
-            print(f"Erro ao carregar o arquivo: {e}")
+            print(f"Erro ao carregar o arquivo JSON: {e}")
             return False
 
     def simular_convocacao(self, num_inscricao, total_vagas, desconsiderar_sub_judice=False):
@@ -386,12 +392,12 @@ class SistemaConvocacao:
             print(f"Erro ao salvar em CSV: {e}")
             return False
 
-# Instanciar o sistema de convocação
-sistema = SistemaConvocacao("dados_candidatos.csv") # Certifique-se de que o caminho está correto
+# Instanciar o sistema de convocação com o arquivo JSON
+sistema = SistemaConvocacao("dados_candidatos.json")
 
 # Carregar os dados
 if not sistema.carregar_dados():
-    print("Erro ao carregar os dados. O programa será encerrado.")
+    print("Erro ao carregar os dados do JSON. O programa será encerrado.")
     exit()
 
 @app.route('/')
