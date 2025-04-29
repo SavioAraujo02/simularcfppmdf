@@ -457,8 +457,8 @@ if __name__ == '__main__':
         if not os.path.exists('pdfs'):
             os.makedirs('pdfs')
             print("Diretório 'pdfs' criado")
-            
-        app.run(debug=True, host='0.0.0.0', port=5000)
+
+        app.run(debug=True, host='0.0.0.0', port=5001)  # Alterei a porta para 5001
         print("Servidor Flask finalizou (isso geralmente não acontece em modo debug)")
     except Exception as e:
         print(f"Erro ao executar app.run(): {e}")
