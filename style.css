@@ -1,0 +1,95 @@
+body {
+    font-family: sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#resultado {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.resultado-oculto {
+    display: none;
+}
+
+#mensagem-ajuda {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.mensagem-ajuda-oculto {
+    display: none;
+}
+
+/* Estilos para alinhar o checkbox e a label de Sub Judice */
+.form-group {
+    display: flex;
+    align-items: center; /* Alinha verticalmente os itens dentro do div */
+    margin-bottom: 10px; /* Adiciona um pouco de espaço abaixo do grupo */
+    justify-content: center; /* Opcional: centraliza o checkbox e a label */
+}
+
+#desconsiderar_sub_judice {
+    margin-right: 5px; /* Espaço à direita do checkbox */
+    vertical-align: middle; /* Alinhamento vertical ao centro */
+}
+
+label[for="desconsiderar_sub_judice"] {
+    vertical-align: middle; /* Alinhamento vertical ao centro */
+    font-weight: normal; /* Remove o negrito padrão da label */
+}

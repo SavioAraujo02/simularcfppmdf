@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Convocação PMDF</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de Convocação PMDF</h1>
+        <label for="inscricao">Número de Inscrição:</label>
+        <input type="text" id="inscricao" name="inscricao">
+
+        <div class="form-group">
+            <input type="checkbox" id="desconsiderar_sub_judice" name="desconsiderar_sub_judice">
+            <label for="desconsiderar_sub_judice">Desconsiderar candidatos Sub Judice na simulação</label>
+        </div>
+
+        <label for="total_vagas">Total de Vagas para Simulação:</label>
+        <input type="number" id="total_vagas" name="total_vagas" value="100">
+        <button onclick="simularConvocacao()">Simular</button>
+
+        <div id="resultado" class="resultado-oculto">
+            <h2>Resultado da Simulação</h2>
+            <p id="mensagem-convocacao"></p>
+            <button onclick="gerarPDF()">Baixar PDF</button>
+        </div>
+        <div id="mensagem-ajuda" class="mensagem-ajuda-oculto">
+            <h3>Apoie este Projeto!</h3>
+            <p>Este site foi desenvolvido com dedicação para te ajudar. Se foi útil para você, considere fazer uma pequena contribuição via PIX:</p>
+            <p><strong>savio.ads02@gmail.com</strong></p>
+            <p>Qualquer valor é bem-vindo!</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
